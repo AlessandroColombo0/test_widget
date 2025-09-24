@@ -523,6 +523,41 @@
         document.addEventListener('DOMContentLoaded', () => {
             new ChatWidget();
         });
+
+        // Get the iframe element
+        const chatIframe = document.getElementById('chatIframe');
+
+        // Get the chat toggle button from within the iframe
+        // We need to wait for the iframe content to load
+        chatIframe.onload = () => {
+            const iframeDocument = chatIframe.contentDocument || chatIframe.contentWindow.document;
+            const chatToggleButton = iframeDocument.getElementById('chatToggle');
+            const chatWidget = iframeDocument.getElementById('chatWidget');
+
+            chatToggleButton.addEventListener('click', () => {
+                // Check if the chat widget is opening or closing
+                if (!chatWidget.classList.contains('open')) {
+                    // Chat is opening, re-enable pointer events on the iframe
+                    chatIframe.style.pointerEvents = 'auto';
+                    
+                    // Also, adjust the iframe size to match the open widget
+                    chatIframe.style.width = '340px';
+                    chatIframe.style.height = '500px';
+                    chatIframe.style.borderRadius = '20px';
+                }
+            });
+            
+            const chatCloseButton = iframeDocument.getElementById('chatClose');
+            chatCloseButton.addEventListener('click', () => {
+                // Chat is closing, disable pointer events on the iframe
+                chatIframe.style.pointerEvents = 'none';
+                
+                // Revert iframe size back to the button size
+                chatIframe.style.width = '60px';
+                chatIframe.style.height = '60px';
+                chatIframe.style.borderRadius = '50%';
+            });
+        };
     </script>
 
 </body>
